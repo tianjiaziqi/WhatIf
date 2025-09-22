@@ -65,6 +65,7 @@ Local co-op for two players. Each player controls one of the husband-and-wife ch
 
 
 ## AI Design
+The behavior of each enemy is governed by a Finite State Machine (FSM), which serves as the core of their decision-making process. The FSM determines the enemy's actions based on factors like player proximity and internal cooldowns.
 
 ### Enemy 1: Obstacle FSM
 
