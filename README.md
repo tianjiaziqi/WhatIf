@@ -4,7 +4,7 @@
 
 What if.. is a 3D co-op platform puzzle game. The game world is a massive cube, with each face representing the past, present, and future. Two players control a married couple, rotating the cube to switch between time planes and collaborating to navigate through changing mechanisms and enemy positions. Player actions influence each other across time: past failures increase present difficulty, while present failures distort the future. Through temporal interaction, the game explores themes of regret, inevitability, and acceptance.
 
----
+
 
 ## Table of Contents
 - [Team Plan](#team-plan)
@@ -18,7 +18,7 @@ What if.. is a 3D co-op platform puzzle game. The game world is a massive cube, 
 - [Controls](#controls)
 - [Project Configuration](#project-configuration)
 
----
+
 
 ## Team Plan
 
@@ -31,7 +31,7 @@ Roles:
 - Jiaziqi: Core Gameplay, Timeline systems, AI and FSM implementation, UI design and integration
 - Zicun: Physics Interaction Management, Environment and level construction, Balance and parameter design, Documentation, and State Tracking System (records player states before timeline switches, death counts, and dynamic difficulty values)
 
----
+
 
 ## Core Gameplay
 
@@ -50,19 +50,19 @@ Players can rotate the cube at any time to switch between Past / Present / Futur
 
 **Failure Condition**: Stepping on traps, falling into void, colliding with monsters.
 
----
+
 
 ## Game Type
 
 Platformer Game
 
----
+
 
 ## Player Setup
 
 Local co-op for two players. Each player controls one of the husband-and-wife characters. Players may exist in different timelines and spaces, but their actions affect each other. Only one player can enter the future phase at a time.
 
----
+
 
 ## AI Design
 
@@ -105,7 +105,7 @@ Local co-op for two players. Each player controls one of the husband-and-wife ch
 - **Died**: Play die animation, and then destroy the game object
 - **Reset**: Enter this state when player move outside the attack range, set destination to initial position and turn to move state
 
----
+
 
 ## Script Event
 
@@ -114,7 +114,7 @@ Local co-op for two players. Each player controls one of the husband-and-wife ch
 - **Farewell**: If one party fails in the final stage, both must restart from the beginning
 - **Burden Transfer**: Triggered when any player fail in their current spacetime. The difficulty level instantly increases by 1 in another player's spacetime: Enemy speed increases, death count + 1, Thinker +1, more trap. If the failure happens in the past, present immediately gains Thinker +1; if in the present, future immediately gains Thinker +1. 
 
----
+
 
 ## Environmental Design
 
@@ -126,7 +126,7 @@ NavMesh baked for AI pathing
 
 Interactive props with colliders/Triggers such as button, door, trap
 
----
+
 
 ## Assets
 
@@ -172,7 +172,7 @@ Interactive Objects:
 
 Models and sounds will come from a mix of free online asset packs(itch.io/Unity Assets Store/kenney.nl/Opengameart.org) and original assets created by our team
 
----
+
 
 ## Physics Scope
 
@@ -190,7 +190,7 @@ Damage detection is based on `Boxcast`/``Spherecast` from the Unity Physics libr
 
 All physics-based operations, such as applying forces for knockback or directly manipulating a Rigidbody's velocity, will be executed within `FixedUpdate` to ensure stable and frame-rate-independent simulation, as per standard physics engine practices
 
----
+
 
 ## FSM Scope
 
@@ -212,7 +212,7 @@ Data-driven config: SO assets for state params (durations, thresholds, interrupt
 
 subscribe events in `OnEnter`, unsubscribe in `OnExit`
 
----
+
 
 ## System and Mechanics
 
@@ -232,7 +232,7 @@ Special events (Fragmentation, Loop, Burden Transfer) dynamically alter the envi
 
 Audio and visual effects provide feedback for key events such as environment collapse, enemy death, and cube rotation.
 
----
+
 
 ## Controls
 
@@ -250,7 +250,7 @@ Shift Sprint
 
 Esc Pause, open system settings menu
 
----
+
 
 ## Project Configuration
 
