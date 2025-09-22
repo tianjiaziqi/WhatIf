@@ -73,10 +73,10 @@ Local co-op for two players. Each player controls one of the husband-and-wife ch
 - **Thinking**: Calculate the path from current position to player's position, once path calculation is complete, it transitions to the Move state
 - **Move**: Move to destination, upon reaching the target position, if the target position is player's position switch to attack state
 
-- **Hit**: This state is triggered upon receiving damage from the player, will interrupt all current action(except died)
-- **Knockback**: Enter when player's attack has knockback effect, will apply an upward, backward force on the unit, and also interrupt all current action(except died). If its position out his move range, will immediately enter move state and the destination will be the nearest point in the range 
-- **Died**: Play die animation, and then destroy the game object
-- **Reset**: Enter this state when player move outside the attack range, set destination to initial position and turn to move state
+- **Hit**: This state is triggered upon receiving damage from the player, will interrupts all current actions(except died)
+- **Knockback**: Enter when player's attack has knockback effect, will apply an upward, backward force on the unit, and also interrupt all current action(except died). If its position out its move range, will immediately enter move state and the destination will be the nearest point in the range 
+- **Died**: Plays death animation, and then destroys the GameObject
+- **Reset**: Enter this state when players move outside the attack range, set destination to initial position and turn to move state
 
 
 
@@ -84,8 +84,8 @@ Local co-op for two players. Each player controls one of the husband-and-wife ch
 
 - **Idle**: Invisible and invincible
 - **Charging / Attack / Fading**: Becomes visible and can take damage. Damage does not interrupt actions; when HP reaches 0, the Thinker immediately enters **Spawn**.
-  - **Charging**:  Charge for next attack, then enter Attack state when cooldown completes
-  - **Attack**: Shoot a bullet horizontally toward the player's position, then return to Charging.
+  - **Charging**:  Charges for next attack, then enters Attack state when cooldown completes
+  - **Attack**: Shoots a bullet horizontally toward the player's position, then returns to Charging.
   - **Fading**: After a fixed time interval or when the player leaves the attack area, fade out and return to Idle (invisible and invincible).
 
 - **Spawn**: Respawn after being destroyed, invincible during spawning.
@@ -96,10 +96,10 @@ Local co-op for two players. Each player controls one of the husband-and-wife ch
 
 ### Enemy 3: Sentinel FSM
 
-- **Idle**: Remains stationary at guard position. When the player enters its attack range, set a random destination in its move range and switch to move state 
-- **Move**: Fly to the destination; upon arrival, pick a new random point within range. Switch to attack state when the attack cooldown completes
+- **Idle**: Remains stationary at guard position. When the player enters its attack range, sets a random destination in its move range and switches to move state 
+- **Move**: Flies to the destination; upon arrival, picks a new random point within range. Switch to attack state when the attack cooldown completes
 
-- **Attack**: Shoot a straight bullet toward player, turn to move state when attack complete
+- **Attack**: Shoots a straight bullet toward player, transitions to move state when attack complete
 - **Hit**: Enter when got damage from player, will interrupt all current action(except died)
 - **Knockback**: Enter when player's attack has knockback effect, will apply a backward force on the unit, and also interrupt all current action(except died). If its position out his move range, will immediately enter move state and the destination will be the nearest point in the range
 - **Died**: Play die animation, and then destroy the game object
@@ -109,10 +109,10 @@ Local co-op for two players. Each player controls one of the husband-and-wife ch
 
 ## Script Event
 
-- **Fragmentation**: When one person activates a future critical mechanism(Press the button or attack the designated monster) while the other remains in the present, the environment collapses. Both parties become trapped in their current states, facing increased enemy encounters.
+- **Fragmentation**: When one person activates a future critical mechanism (Press the button or attack the designated monster) while the other remains in the present, the environment collapses. Both parties become trapped in their current states, facing increased enemy encounters.
 - **Loop**: When rotating back to the past, the past retains the state it was in when “Fragmentation” occurred.
 - **Farewell**: If one party fails in the final stage, both must restart from the beginning
-- **Burden Transfer**: Triggered when any player fail in their current spacetime. The difficulty level instantly increases by 1 in another player's spacetime: Enemy speed increases, death count + 1, Thinker +1, more trap. If the failure happens in the past, present immediately gains Thinker +1; if in the present, future immediately gains Thinker +1. 
+- **Burden Transfer**: Triggered when any player fails in their current spacetime. The difficulty level instantly increases by 1 in another player's spacetime: Enemy speed increases, death count + 1, Thinker +1, more trap. If the failure happens in the past, present immediately gains Thinker +1; if in the present, future immediately gains Thinker +1. 
 
 
 
@@ -120,7 +120,7 @@ Local co-op for two players. Each player controls one of the husband-and-wife ch
 
 The world is a massive 3D cube, with gameplay occurring on different 3D planes within the cube.
 
-Two main scene: Home and Wedding Venue, Home has living room, kitchen, and bedroom. Wedding Venue has lawn and Center
+Two main scenes: Home and Wedding Venue, Home has living room, kitchen, and bedroom. Wedding Venue has lawn and Center
 
 NavMesh baked for AI pathing
 
@@ -170,7 +170,7 @@ Interactive Objects:
 
 ### Source of Assets
 
-Models and sounds will come from a mix of free online asset packs(itch.io/Unity Assets Store/kenney.nl/Opengameart.org) and original assets created by our team
+Models and sounds will come from a mix of free online asset packs (itch.io/Unity Assets Store/kenney.nl/Opengameart.org) and original assets created by our team
 
 
 
@@ -178,15 +178,15 @@ Models and sounds will come from a mix of free online asset packs(itch.io/Unity 
 
 Rigidbody on players, Sentinel and Obstacle
 
-Colliders on Thinker, door, platforms and the world cube
+Colliders on Thinker, doors, platforms and the world cube
 
-Triggers on bullet, trap, and button
+Triggers on bullets, traps, and buttons
 
 Implement the enemy knockback effect by applying force to its rigidbody
 
 Enemy knockback occurs only when hit by the player's knockback attack, applying an upward, backward impulse to the enemy's Rigidbody.
 
-Damage detection is based on `Boxcast`/``Spherecast` from the Unity Physics library, triggered on specific frames of the attack animation.
+Damage detection is based on `Boxcast`/`Spherecast` from the Unity Physics library, triggered on specific frames of the attack animation.
 
 All physics-based operations, such as applying forces for knockback or directly manipulating a Rigidbody's velocity, will be executed within `FixedUpdate` to ensure stable and frame-rate-independent simulation, as per standard physics engine practices
 
@@ -208,7 +208,7 @@ Interrupt policy: states tagged as interruptible by specific events (Hurt, Knock
 
 Debug overlay: current/previous state, last transition cause, cool down timers
 
-Data-driven config: SO assets for state params (durations, thresholds, interrupt rules)
+Data-driven config: ScriptableObject assets for state params (durations, thresholds, interrupt rules)
 
 subscribe events in `OnEnter`, unsubscribe in `OnExit`
 
@@ -263,7 +263,7 @@ Unity (2022.3.62f1), C# Script for
 - `TimelineManager`: Record timeline events and adjust difficulty  
 - `UIManager`: Manage UI panels and HUD
 
-NevMesh for AI Pathing
+NavMesh for AI Pathing
 
 Enemy movement will be driven by Unity's NavMeshAgent component, which will handle pathfinding and physical navigation
 
