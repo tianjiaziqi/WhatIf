@@ -166,7 +166,14 @@ Interactive Objects:
 - Button
 - Door
 
-
+### Sound
+- Cube rotation
+- Footsteps
+- Jump
+- Attack/hit
+- Failure
+- Enemy death
+- Interaction sounds(button, door, trap)
 
 ### Source of Assets
 
