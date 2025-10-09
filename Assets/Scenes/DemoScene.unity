@@ -617,6 +617,7 @@ GameObject:
   - component: {fileID: 564659234}
   - component: {fileID: 564659233}
   - component: {fileID: 564659236}
+  - component: {fileID: 564659237}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -742,6 +743,24 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &564659237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 564659232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9421b6ae52957b49ae3c496c5556a19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1713364205}
+  positionOffset: {x: 0, y: 0, z: 0}
+  lookAtOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  moveSpeed: 0
+  rotationSpeed: 0
 --- !u!1 &627634226
 GameObject:
   m_ObjectHideFlags: 0
@@ -1349,6 +1368,21 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 5f3b12cd0847fb74591262b52fe28a28,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5f3b12cd0847fb74591262b52fe28a28,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5f3b12cd0847fb74591262b52fe28a28,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5f3b12cd0847fb74591262b52fe28a28,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -50.68
       objectReference: {fileID: 0}
@@ -1829,6 +1863,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50fb7ce480d7a804d86292e8b6b7f334, type: 3}
+--- !u!4 &1713364205 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bffdb4ab2a821f340a047e82771efb1c,
+    type: 3}
+  m_PrefabInstance: {fileID: 287889319}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1815223870
 GameObject:
   m_ObjectHideFlags: 0
