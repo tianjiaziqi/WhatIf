@@ -70,7 +70,8 @@ namespace WhatIf
             }
 
             var typeState = (StateBase<TParam>)state;
-            //TODO: ChangeStateInternal(typedState, param);
+            ChangeStateInternal(typeState, param);
+            Debug.Log($"Change state to {typeof(TState)}");
         }
         
         /// <summary>
@@ -80,6 +81,18 @@ namespace WhatIf
         public void ChangeState<TState>() where TState : StateBaseNoParam
         {
             ChangeState<TState, NoParam>(NoParam.Instance);
+        }
+
+        public StateBase GetState<TState>() where TState : StateBaseNoParam
+        {
+            if (!_states.TryGetValue(typeof(TState), out var state))
+            {
+                throw new ArgumentException($"State {typeof(TState)} not registered");
+            }
+            else
+            {
+                return state as TState;
+            }
         }
 
         /// <summary>
