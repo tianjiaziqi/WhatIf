@@ -29,6 +29,11 @@ namespace WhatIf
         /// Finite State Machine: Manage the current state for this unit.
         /// </summary>
         public FSM fsm;
+        
+        
+        public Rigidbody rb;
+        
+        public Animator animator;
 
         /// <summary>
         /// Max Hp of this unit.
@@ -49,16 +54,26 @@ namespace WhatIf
         
         public float atk;
 
+        public GroundCheck ground;
+
+        public bool IsGrounded => ground != null && ground.IsGrounded;
+
+        public Vector3 PlanarVelocity
+        {
+            get => new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            set => rb.velocity = new Vector3(value.x, rb.velocity.y, value.z);
+        }
+
         /// <summary>
         /// Handle damage
         /// </summary>
         /// <param name="attacker">Who attacked this unit</param>
         /// <param name="damage">Amount of damage to take</param>
-        public void TakeDamage(Unit attacker, double damage)
+        public virtual void TakeDamage(Unit attacker, double damage)
         {
             // Do nothing if the unit is dead or no damage
             if(damage <= 0) return;
-            //if(IsDead()) return;
+            if(IsDead()) return;
             currentHp -= damage;
             currentHp = System.Math.Max(currentHp, 0); // Make sure hp never below 0
             Debug.Log($"{name} got {damage} damage from {attacker.name}, current hp: {currentHp}");
@@ -74,7 +89,6 @@ namespace WhatIf
         protected virtual void Ondeath()
         {
             Debug.Log($"{name} died");
-            //TODO: Change to death state
         }
         
         /// <summary>
@@ -82,14 +96,15 @@ namespace WhatIf
         /// </summary>
         public BoxCollider boxColliderAttackArea;
 
-        [Header("Movement")] public float walkSpeed;
+        [Header("Movement")] 
+        public float walkSpeed;
         public float runSpeed;
         public float runAcceleration;
         public float turnSpeed;
 
-        [Header("Jump")] public float jumpForce;
+        [Header("Jump")] public float jumpHeight;
         // move speed when in the air
-        public float airAcceleration;
+        public float airSpeed;
 
         protected virtual void Awake()
         {
@@ -131,6 +146,7 @@ namespace WhatIf
                 // Register the state to the FSM
                 fsm.RegisterState(stateInstance, this);
             }
+            rb = GetComponent<Rigidbody>();
             Debug.Log($"{name} initialized with {fsm.GetRegisteredStateCount()} states");
         }
 
@@ -142,9 +158,15 @@ namespace WhatIf
                 return;
             }
             
-            //TODO: check if idle state is registered, change to it if yes
+            var idleState = fsm.GetState<IdleState>();
+            if (idleState == null)
+            {
+                Debug.LogError($"IdleState not found in FSM for {name}. ");
+                return;
+            }
             
             currentHp = maxHp;
+            fsm.ChangeState<IdleState>();
         }
 
         protected virtual void Update()
@@ -167,9 +189,9 @@ namespace WhatIf
         /// Check if this unit died
         /// </summary>
         /// <returns></returns>
-        public bool IsDead()
+        public virtual bool IsDead()
         {
-            return true;
+            return false;
             //TODO: check if in dead state
         }
         
