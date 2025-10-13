@@ -324,3 +324,7 @@ stateDiagram-v2
 ### Gameplay Video
 https://youtu.be/6sQPsoHl8Xk
 
+### Temporary Control:
+WASD - Move
+J - Deal 20 damage to Thinker
+
