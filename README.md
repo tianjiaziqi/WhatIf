@@ -325,6 +325,6 @@ stateDiagram-v2
 https://youtu.be/6sQPsoHl8Xk
 
 ### Temporary Control:
-WASD - Move
-J - Deal 20 damage to Thinker
+- WASD - Move
+- J - Deal 20 damage to Thinker
 
