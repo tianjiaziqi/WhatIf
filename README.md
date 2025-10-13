@@ -321,5 +321,6 @@ stateDiagram-v2
     Fading --> Idle: Fade out complete
     Active --> Spawn: HP <= 0
 ```
-
+### Gameplay Video
+https://youtu.be/6sQPsoHl8Xk
 
