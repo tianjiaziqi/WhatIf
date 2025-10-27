@@ -17,6 +17,7 @@ What if.. is a 3D co-op platform puzzle game. The game world is a massive cube, 
 - [FSM Scope](#fsm-scope)
 - [Controls](#controls)
 - [Project Configuration](#project-configuration)
+- [Assignment 2](#assignment-2)
 
 
 
@@ -86,12 +87,13 @@ The behavior of each enemy is governed by a Finite State Machine (FSM), which se
 - **Idle**: Invisible and invincible
 - **Charging / Attack / Fading**: Becomes visible and can take damage. Damage does not interrupt actions; when HP reaches 0, the Thinker immediately enters **Spawn**.
   - **Charging**:  Charges for next attack, then enters Attack state when cooldown completes
-  - **Attack**: Shoots a bullet horizontally toward the player's position, then returns to Charging.
-  - **Fading**: After a fixed time interval or when the player leaves the attack area, fade out and return to Idle (invisible and invincible).
+  - **Attack**: Shoots a bullet toward the player's position, then returns to Charging.
+  - **Fading**: When the player leaves the attack area, fade out and return to Idle (invisible and invincible).
 
 - **Spawn**: Respawn after being destroyed, invincible during spawning.
 
 **Note**: Damage does not interrupt the Thinker's actions; therefore, it lacks a 'Hit' state
+
 
 
 
@@ -285,5 +287,44 @@ GitHub repository with commits organized by functional module and clear descript
 
 README and in-game debug overlay displaying FPS, current/previous state, timeline difficulty, and Failure count for assessment and debugging
 
+## Assignment 2
 
+### FSM Description
+
+- **Idle**: Invisible and invincible
+- **Charging / Attack / Fading**: Becomes visible and can take damage. Damage does not interrupt actions; when HP reaches 0, the Thinker immediately enters **Spawn**.
+  - **Charging**:  Charges for next attack, then enters Attack state when cooldown completes
+  - **Attack**: Shoots a bullet toward the player's position, then returns to Charging.
+  - **Fading**: When the player leaves the attack area, fade out and return to Idle (invisible and invincible).
+
+- **Spawn**: Respawn after being destroyed, invincible during spawning.
+
+**Note**: Damage does not interrupt the Thinker's actions; therefore, it lacks a 'Hit' state
+
+### FSM Diagram
+``` mermaid
+stateDiagram-v2
+    Spawn
+
+    state "Visible & Vulnerable" as Active {
+        Charging: Charging
+        Attack: Attack
+        Fading: Fading
+
+        Charging --> Attack: Charge timer complete
+        Attack --> Charging: Attack finished
+        Charging --> Fading: Player leaves range
+    }
+
+    Spawn --> Charging: Respawn complete
+    Idle --> Charging: Player enters range
+    Fading --> Idle: Fade out complete
+    Active --> Spawn: HP <= 0
+```
+### Gameplay Video
+https://youtu.be/6sQPsoHl8Xk
+
+### Temporary Control:
+- WASD - Move
+- J - Deal 20 damage to Thinker
 
