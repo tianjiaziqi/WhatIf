@@ -30,7 +30,7 @@ namespace WhatIf
 
         public override void OnUpdate()
         {
-            if (!ownerUnit.IsGrounded) _hasStartedJump = true;
+            if (!ownerUnit.isGrounded) _hasStartedJump = true;
             CheckLanding();
         }
 
@@ -53,7 +53,7 @@ namespace WhatIf
 
         private void CheckLanding()
         {
-            if (ownerUnit.IsGrounded && !_hasLanded && _hasStartedJump)
+            if (ownerUnit.isGrounded && !_hasLanded && _hasStartedJump)
             {
                 _hasLanded = true;
                 

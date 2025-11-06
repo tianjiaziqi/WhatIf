@@ -71,7 +71,7 @@ namespace WhatIf
 
             var typeState = (StateBase<TParam>)state;
             ChangeStateInternal(typeState, param);
-            Debug.Log($"Change state to {typeof(TState)}");
+            Debug.Log($"{CurrentState.ownerUnit.name}: Change state to {typeof(TState)}");
         }
         
         /// <summary>

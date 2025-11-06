@@ -17,11 +17,11 @@ namespace WhatIf
 
         public override void OnUpdate()
         {
-            if (wasGrounded && !ownerUnit.IsGrounded)
+            if (wasGrounded && !ownerUnit.isGrounded)
             {
                 ownerFsm.ChangeState<AirState, AirborneStateParam>(AirborneStateParam.FromFall());
             }
-            wasGrounded = ownerUnit.IsGrounded;
+            wasGrounded = ownerUnit.isGrounded;
 
             //HandleInput();
             HandleJumpInput();
@@ -36,6 +36,10 @@ namespace WhatIf
         {
             if (!ownerUnit.ShouldRespondToInput())
                 return;
+            if (InputManager.Instance.AttackPressed && ownerUnit.isGrounded)
+            {
+                ownerFsm.ChangeState<AttackState>();
+            }
         }
 
         void HandleJumpInput()
@@ -43,7 +47,7 @@ namespace WhatIf
             if (!ownerUnit.ShouldRespondToInput())
                 return;
         
-            if (InputManager.Instance.JumpPressed && ownerUnit.IsGrounded)
+            if (InputManager.Instance.JumpPressed && ownerUnit.isGrounded)
             {
                 ownerFsm.ChangeState<AirState, AirborneStateParam>(AirborneStateParam.FromJump());
             }
@@ -81,7 +85,7 @@ namespace WhatIf
             float maxSpeed =  ownerUnit.walkSpeed;
             
             
-            if (ownerUnit.IsGrounded)
+            if (ownerUnit.isGrounded)
             {
                 Vector3 targetVelocity = new Vector3(inputVector.x, 0 , inputVector.y) * maxSpeed;
                 ownerUnit.PlanarVelocity = Vector3.MoveTowards(

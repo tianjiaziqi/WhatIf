@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace WhatIf
@@ -54,9 +51,8 @@ namespace WhatIf
         
         public float atk;
 
-        public GroundCheck ground;
-
-        public bool IsGrounded => ground != null && ground.IsGrounded;
+        public GroundDetctor groundDetector;
+        public bool isGrounded;
 
         public Vector3 PlanarVelocity
         {
@@ -88,13 +84,14 @@ namespace WhatIf
 
         protected virtual void Ondeath()
         {
+            //TODO: add death animation and Restart UI
             Debug.Log($"{name} died");
         }
         
         /// <summary>
         /// BoxCollider that define attack area, this should be set to a trigger
         /// </summary>
-        public BoxCollider boxColliderAttackArea;
+        public BoxCollider attackArea;
 
         [Header("Movement")] 
         public float walkSpeed;
@@ -103,8 +100,6 @@ namespace WhatIf
         public float turnSpeed;
 
         [Header("Jump")] public float jumpHeight;
-        // move speed when in the air
-        public float airSpeed;
 
         protected virtual void Awake()
         {
@@ -166,6 +161,20 @@ namespace WhatIf
             }
             
             currentHp = maxHp;
+            groundDetector.OnEnter.AddListener((other) =>
+            {
+                if (other.CompareTag("Ground"))
+                {
+                    isGrounded = true;
+                }
+            });
+            groundDetector.OnExit.AddListener((other) =>
+            {
+                if (other.CompareTag("Ground"))
+                {
+                    isGrounded = false;
+                }
+            });
             fsm.ChangeState<IdleState>();
         }
 
@@ -219,52 +228,10 @@ namespace WhatIf
                     return false;
             }
         }
-        public void DetectTargetsInAttackArea(List<Unit> validTargets)
-        {
-            validTargets.Clear();
-            
-            
-            if (boxColliderAttackArea == null)
-            {
-                Debug.LogError("BoxCollider attack area is null, cannot perform target detection");
-                return;
-            }
-            
-            BoxCollider attackArea = boxColliderAttackArea;
-            
-            // Get world space data for detecting area
-            Vector3 center = attackArea.transform.TransformPoint(attackArea.center);
-            Vector3 halfExtents = Vector3.Scale(attackArea.size, attackArea.transform.lossyScale) * 0.5f;
-            Quaternion orientation = attackArea.transform.rotation;
-            
-            // Use OverlapBoxNonAlloc to detect
-            const int maxColliders = 10;
-            Collider[] hitColliders = new Collider[maxColliders];
-            int hitCount = Physics.OverlapBoxNonAlloc(center, halfExtents, hitColliders, orientation);
-            
-            Debug.Log($"Attack area detected {hitCount} colliders");
-            
-            for (int i = 0; i < hitCount; i++)
-            {
-                Collider hitCollider = hitColliders[i];
-                
-                // Only detect colliders that are CapsuleCollider
-                if (!(hitCollider is CapsuleCollider))
-                {
-                    continue;
-                }
 
-                // get the target unit from collider
-                Unit targetUnit = hitCollider.GetComponent<Unit>();
-                
-                // check if target is enemy
-                if (IsEnemy(targetUnit))
-                {
-                    validTargets.Add(targetUnit);
-                }
-            }
-        }
-        
+        public abstract void OnAttack();
+
+
     }
 
 }

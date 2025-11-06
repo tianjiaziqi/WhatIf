@@ -60,6 +60,8 @@ namespace WhatIf
             runHeld = Input.GetKey(KeyCode.LeftShift);
             
             interactPressed = Input.GetKeyDown(KeyCode.E);
+            
+            attackPressed = Input.GetKeyDown(KeyCode.J);
         }
     }
 }

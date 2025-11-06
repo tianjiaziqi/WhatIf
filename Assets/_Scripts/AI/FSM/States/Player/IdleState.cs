@@ -15,12 +15,12 @@ namespace WhatIf
             ownerUnit.rb.velocity = new Vector3(0f, v.y, 0f);
 
             ownerUnit.animator.SetFloat("Speed", 0f);
-            _wasGrounded = ownerUnit.IsGrounded;
+            _wasGrounded = ownerUnit.isGrounded;
         }
 
         public override void OnUpdate()
         {
-            bool grounded = ownerUnit.IsGrounded; 
+            bool grounded = ownerUnit.isGrounded; 
 
             
             if (_wasGrounded && !grounded)
@@ -52,7 +52,7 @@ namespace WhatIf
             
             if (InputManager.Instance.AttackPressed)
             {
-                //TODO: Change to attack state
+                ownerFsm.ChangeState<AttackState>();
                 return;
             }
             

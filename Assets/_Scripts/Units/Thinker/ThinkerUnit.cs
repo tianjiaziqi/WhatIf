@@ -94,7 +94,7 @@ namespace WhatIf
             fsm.ChangeState<ThinkerSpawnState>();
         }
 
-        public void Shooting()
+        public override void OnAttack()
         {
             if(targetTransform != null){
                 GameObject projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
