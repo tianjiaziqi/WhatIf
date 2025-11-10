@@ -18,6 +18,7 @@ What if.. is a 3D co-op platform puzzle game. The game world is a massive cube, 
 - [Controls](#controls)
 - [Project Configuration](#project-configuration)
 - [Assignment 2](#assignment-2)
+- [Assignment 3](#assignment-3)
 
 
 
@@ -70,15 +71,17 @@ The behavior of each enemy is governed by a Finite State Machine (FSM), which se
 
 ### Enemy 1: Obstacle FSM
 
-- **Idle**: Remains stationary at guard position, switch to alert state when the player enters its attack range
+- **ObstacleIdle**: Stands guard at its designated guardPosition. Checks for the player entering its engageArea or if it has strayed too far from its post.
 
-- **Thinking**: Calculate the path from current position to player's position, once path calculation is complete, it transitions to the Move state
-- **Move**: Move to destination, upon reaching the target position, if the target position is player's position switch to attack state
+- **ObstacleMove**: Uses NavMeshAgent to seek and pursue the player (targetTransform). Will transition to Attack if in attack range or ReturnToGuard if the player is lost or dies.
 
-- **Hit**: This state is triggered upon receiving damage from the player, will interrupts all current actions(except died)
-- **Knockback**: Enter when player's attack has knockback effect, will apply an upward, backward force on the unit, and also interrupt all current action(except died). If its position out its move range, will immediately enter move state and the destination will be the nearest point in the range 
-- **Died**: Plays death animation, and then destroys the GameObject
-- **Reset**: Enter this state when players move outside the attack range, set destination to initial position and turn to move state
+- **ObstacleHit**: A high-priority interrupt state triggered by TakeDamage.  Plays a hit animation and pauses other logic
+
+- **ObstacleDie**: Final state triggered when HP reaches 0.  Disables physics, plays a death animation, and self-destructs after 5 seconds.
+
+- **ObstacleReturnToGuard**: Uses NavMeshAgent to pathfind back to its original guardPosition. Will be interrupted if the player re-engages.
+
+- **ObstacleAttack**: Stops moving, turns to face the player, and triggers an attack animation. Relies on an animation event (OnAttack) to complete the attack and return to Idle.
 
 
 
@@ -264,7 +267,7 @@ Esc Pause, open system settings menu
 
 ## Project Configuration
 
-Unity (2022.3.62f1), C# Script for
+Unity (2022.3.62f2), C# Script for
 
 - `Unit`: Base class for enemies and players  
 - `FSM`: Manage state transitions, held by each unit  
@@ -286,6 +289,8 @@ Collision layers configured in Project Settings
 GitHub repository with commits organized by functional module and clear descriptions
 
 README and in-game debug overlay displaying FPS, current/previous state, timeline difficulty, and Failure count for assessment and debugging
+
+---
 
 ## Assignment 2
 
@@ -328,3 +333,44 @@ https://youtu.be/6sQPsoHl8Xk
 - WASD - Move
 - J - Deal 20 damage to Thinker
 
+---
+
+## Assignment 3
+
+### Demo Video Link
+https://youtu.be/xpJysKle2fI
+
+### Decision System
+The Enemy Obstacle using Finite State Mechine(FSM) to do the decision making, FSM manages transition between states to create dynamic behaviors:
+
+- **ObstacleIdle**: Stands guard at its designated guardPosition. Checks for the player entering its engageArea or if it has strayed too far from its post.
+
+- **ObstacleMove**: Uses NavMeshAgent to seek and pursue the player (targetTransform). Will transition to Attack if in attack range or ReturnToGuard if the player is lost or dies.
+
+- **ObstacleHit**: A high-priority interrupt state triggered by TakeDamage.  Plays a hit animation and pauses other logic
+
+- **ObstacleDie**: Final state triggered when HP reaches 0.  Disables physics, plays a death animation, and self-destructs after 5 seconds.
+
+- **ObstacleReturnToGuard**: Uses NavMeshAgent to pathfind back to its original guardPosition. Will be interrupted if the player re-engages.
+
+- **ObstacleAttack**: Stops moving, turns to face the player, and triggers an attack animation. Relies on an animation event (OnAttack) to complete the attack and return to Idle.
+
+### PathFinding
+Pathfinding is implemented using Unity's built-in **NavMeshAgent** component, which is attached to the Obstacle prefab.
+
+- The game environment (ground) features a **NavMeshSurface** component, which is baked to define all walkable areas.
+- The NavMeshAgent handles all pathfinding calculations, enabling the AI to successfully navigate to the player's location (ObstacleMove) and return to its guardPosition (ObstacleReturnToGuard).
+
+### Steering
+- **Seek**: This is the core logic of the ObstacleMove state, which continuously updates the target point toward the player using `agent.SetDestination`.
+- **Avoid**: This is automatically handled by the built-in Obstacle Avoidance feature of the NavMeshAgent component. This is clearly demonstrated in the demo video when the AI navigates around pillars.
+
+### Integration of Logic
+FSM (decision-making) and NavMeshAgent (pathfinding) consistently work together.
+- **FSM controls pathfinding**: The FSM acts as the “brain.” For example, when the ObstacleMove state decides to attack, it first commands the NavMeshAgent to stop (`agent.isStopped = true`), then the FSM transitions to the `ObstacleAttack` state.
+- **FSM Interrupts Pathfinding**: Conversely, if the AI is in the ObstacleReturnToGuard state, the FSM's `OnUpdate` still checks for the player. If the player re-enters range, the FSM **immediately interrupts** the current return path and switches to the ObstacleMove state.
+
+  ### Temporary Control:
+  - WASD - Move
+  - Space - Jump
+  - J - Attack
