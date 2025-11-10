@@ -16,6 +16,7 @@ public class ObstacleAttack : StateBaseNoParam
         }
 
         _unit.agent.isStopped = true;
+        _unit.agent.velocity = new Vector3(0f, _unit.agent.velocity.y, 0f);
         _unit.transform.rotation = Quaternion.LookRotation(_unit.targetTransform.position - _unit.transform.position);
         _unit.animator.SetTrigger("Attack");
     }

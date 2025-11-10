@@ -22,13 +22,15 @@ namespace WhatIf
         }
         public override void OnUpdate()
         {
-            if(_unit.playerInRange)
+            if(_unit.playerInRange && !_unit.targetTransform.GetComponent<PlayerUnit>().IsDead())
             {
                 ownerFsm.ChangeState<ObstacleMove>();
                 return;
             }
+            float sqrDistToGuard = (_unit.guardPosition - _unit.transform.position).sqrMagnitude;
+            float stopSqr = _unit.agent.stoppingDistance * _unit.agent.stoppingDistance;
 
-            if (_unit.agent.hasPath && _unit.agent.remainingDistance <= _unit.agent.stoppingDistance)
+            if (sqrDistToGuard <= stopSqr)
             {
                 ownerFsm.ChangeState<ObstacleIdle>();
             }

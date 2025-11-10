@@ -85,11 +85,12 @@ namespace WhatIf
 
         public override bool IsDead()
         {
-            return fsm.CurrentState.StateName == "ThinkerSpawn";
+            return currentHp <= 0;
         }
 
         public override void OnAttack()
         {
+            if (IsDead()) return;
             if (attackArea == null)
             {
                 Debug.LogError($"Can not find attack area component for {name}");
@@ -135,6 +136,7 @@ namespace WhatIf
 
         public void OnHitAnimationFinish()
         {
+            if(IsDead()) return;
             if(fsm != null)
                 fsm.ChangeState<ObstacleIdle>();
         }

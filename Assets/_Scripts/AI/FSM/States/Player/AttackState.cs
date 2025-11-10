@@ -15,6 +15,8 @@ public class AttackState : StateBaseNoParam
         {
             _unit = unit;
         }
+        _unit.rb.velocity = new Vector3(0f, _unit.rb.velocity.y, 0f);
+        _unit.PlanarVelocity = Vector3.zero;
         _unit.animator.SetTrigger("Attack");
     }
 

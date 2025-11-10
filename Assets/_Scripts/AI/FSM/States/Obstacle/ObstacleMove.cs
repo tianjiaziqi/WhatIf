@@ -27,7 +27,7 @@ namespace WhatIf
         }
         public override void OnUpdate()
         {
-            if (!_unit.playerInRange)
+            if (!_unit.playerInRange || _unit.targetTransform.GetComponent<PlayerUnit>().IsDead())
             {
                 ownerFsm.ChangeState<ObstacleReturnToGuard>();
                 return;
@@ -64,12 +64,7 @@ namespace WhatIf
                     _moveTimer = 1f;    
                 }
             }
-            _moveTimer -= Time.deltaTime;
-            if (_moveTimer <= 0f)
-            {
-                SetPlayerDestination();
-                _moveTimer = 0.5f;    
-            }
+            
         }
 
         public override void OnExit()

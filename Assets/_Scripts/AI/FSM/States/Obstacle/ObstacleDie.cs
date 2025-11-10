@@ -16,6 +16,10 @@ namespace WhatIf
             }
             _unit.agent.isStopped = true;
             _unit.animator.SetBool("IsDead", true);
+            if (_unit.GetComponent<Collider>() != null)
+            {
+                _unit.GetComponent<Collider>().enabled = false;      
+            }
             GameObject.Destroy(_unit.gameObject, 5f);
         }
         public override void OnUpdate()

@@ -84,7 +84,6 @@ namespace WhatIf
 
         protected virtual void Ondeath()
         {
-            //TODO: add death animation and Restart UI
             Debug.Log($"{name} died");
         }
         
@@ -95,9 +94,7 @@ namespace WhatIf
 
         [Header("Movement")] 
         public float walkSpeed;
-        public float runSpeed;
         public float runAcceleration;
-        public float turnSpeed;
 
         [Header("Jump")] public float jumpHeight;
 
@@ -201,7 +198,6 @@ namespace WhatIf
         public virtual bool IsDead()
         {
             return false;
-            //TODO: check if in dead state
         }
         
         /// <summary>

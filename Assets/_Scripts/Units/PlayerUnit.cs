@@ -8,6 +8,7 @@ namespace WhatIf
     {
         public override void OnAttack()
         {
+            if(IsDead()) return;
             if (attackArea == null)
             {
                 Debug.LogError("BoxCollider attack area is null, cannot perform target detection");
@@ -51,7 +52,34 @@ namespace WhatIf
 
         public void OnAttackAnimationComplete()
         {
+            if(IsDead()) return;
             fsm.ChangeState<IdleState>();
+        }
+
+        protected override void Ondeath()
+        {
+            base.Ondeath();
+            fsm.ChangeState<DieState>();
+            UIManager.Instance.ShowGameOverPanel();
+        }
+        public void OnHitAnimationComplete()
+        {
+            if(IsDead()) return;
+            fsm.ChangeState<IdleState>();
+        }
+
+        public override void TakeDamage(Unit attacker, double damage)
+        {
+            base.TakeDamage(attacker, damage);
+            if (!IsDead())
+            {
+                fsm.ChangeState<HitState>();
+            }
+        }
+
+        public override bool IsDead()
+        {
+            return currentHp <= 0;
         }
     }
 }

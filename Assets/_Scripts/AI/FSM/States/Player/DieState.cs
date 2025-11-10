@@ -1,18 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using WhatIf;
 
-public class DieState : MonoBehaviour
+public class DieState : StateBaseNoParam
 {
-    // Start is called before the first frame update
-    void Start()
+    public override string StateName => "Die";
+    
+    protected override void OnEnterNoParam(StateBase oldState)
+    {
+        ownerUnit.rb.velocity = Vector3.zero;
+        ownerUnit.animator.SetBool("IsDead", true);
+        if (ownerUnit.GetComponent<Collider>() != null)
+        {
+            ownerUnit.GetComponent<Collider>().enabled = false;       
+        }
+        ownerUnit.rb.isKinematic = true;
+    }
+    public override void OnUpdate()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnExit()
     {
         
     }
+
+    
 }
