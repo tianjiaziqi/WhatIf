@@ -364,6 +364,7 @@ Pathfinding is implemented using Unity's built-in **NavMeshAgent** component, wh
 ### Steering
 - **Seek**: This is the core logic of the ObstacleMove state, which continuously updates the target point toward the player using `agent.SetDestination`.
 - **Avoid**: This is automatically handled by the built-in Obstacle Avoidance feature of the NavMeshAgent component. This is clearly demonstrated in the demo video when the AI navigates around pillars.
+- **Believable Movement**: To satisfy the "smooth and believable" requirement, the AI's Animator parameter (IsMoving) is kept in sync with the FSM. Furthermore, the AI executes a LookRotation to face the player before attacking, increasing realism.
 
 ### Integration of Logic
 FSM (decision-making) and NavMeshAgent (pathfinding) consistently work together.
