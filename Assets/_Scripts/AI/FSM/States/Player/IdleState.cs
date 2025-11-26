@@ -8,18 +8,19 @@ namespace WhatIf
 
         protected override void OnEnterNoParam(StateBase oldState)
         {
-            ownerUnit.rb.velocity = new Vector3(0f, ownerUnit.rb.velocity.y, 0f);
-            ownerUnit.animator.SetFloat("Speed", 0f);
+            base.OnEnterNoParam(oldState);
+            _unit.rb.velocity = new Vector3(0f, ownerUnit.rb.velocity.y, 0f);
+            _unit.animator.SetFloat("Speed", 0f);
 
-            if (ownerUnit.isGrounded)
+            if (_unit.isGrounded)
             {
-                ownerUnit.PlanarVelocity = Vector3.zero;
+                _unit.PlanarVelocity = Vector3.zero;
             }
         }
 
         protected override void OnGroundUpdate()
         {
-            if (InputManager.Instance.HasMovementInput && ownerUnit.ShouldRespondToInput())
+            if (_unit.networkInput.magnitude >= 0.1f && ownerUnit.ShouldRespondToInput())
             {
                 ownerFsm.ChangeState<MoveState>();
                 return;

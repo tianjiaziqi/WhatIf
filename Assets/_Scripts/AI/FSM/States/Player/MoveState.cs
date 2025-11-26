@@ -7,16 +7,13 @@ namespace WhatIf
     public class MoveState : GroundState
     {
         public override string StateName => "Move";
-        
 
-        protected override void OnEnterNoParam(StateBase oldState)
-        {
-            
-        }
+
+        
 
         protected override void OnGroundUpdate()
         {
-            if(!InputManager.Instance.HasMovementInput && ownerUnit.ShouldRespondToInput())
+            if(_unit.networkInput.magnitude <= 0.1f && ownerUnit.ShouldRespondToInput())
             {
                 ownerFsm.ChangeState<IdleState>();
                 return;
@@ -28,10 +25,11 @@ namespace WhatIf
 
         void HandleMovement()
         {
+            var input = _unit.networkInput;
             if (ownerUnit.isGrounded)
             {
-                var targetVelocity = new Vector3(InputManager.Instance.MovementInput.x, 0f, InputManager.Instance.MovementInput.y) * ownerUnit.walkSpeed;
-                ownerUnit.PlanarVelocity = Vector3.MoveTowards(ownerUnit.PlanarVelocity, targetVelocity, ownerUnit.runAcceleration * Time.fixedDeltaTime);
+                var targetVelocity = new Vector3(input.x, 0f, input.y) * ownerUnit.walkSpeed;
+                ownerUnit.PlanarVelocity = targetVelocity;
                 if (targetVelocity.magnitude > 0.1f)
                 {
                     ownerUnit.transform.rotation = Quaternion.LookRotation(targetVelocity.normalized);

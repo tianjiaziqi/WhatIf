@@ -13,16 +13,19 @@ namespace WhatIf
         private bool _hasLanded;
         private float _initialY;
         private bool _hasStartedJump;
+        private PlayerUnit _unit;
 
         protected override void OnEnter(AirborneStateParam param, StateBase oldState)
         {
+            if(ownerUnit is PlayerUnit unit) _unit = unit;
             _initialY = ownerUnit.transform.position.y;
+
             if (param.EntryType == EAirborneEnterType.FromJump)
             {
+                _unit.PerformJump(); 
+                
                 ownerUnit.animator.SetTrigger("Jump");
-                PerformJump();
             }
-
             ownerUnit.animator.SetBool("Airborne", true);
             _hasLanded = false;
             _hasStartedJump = false;
@@ -42,14 +45,7 @@ namespace WhatIf
             _hasStartedJump = false;
         }
 
-        private void PerformJump()
-        {
-            float g = -Physics.gravity.y;
-            float v0 = Mathf.Sqrt(2f * g * ownerUnit.jumpHeight);
-            Vector3 v = ownerUnit.rb.velocity;
-            v.y = v0;
-            ownerUnit.rb.velocity = v;
-        }
+        
 
         private void CheckLanding()
         {
@@ -59,7 +55,7 @@ namespace WhatIf
                 
                 if (ownerUnit.unitType == EUnitType.Player)
                 {
-                    bool hasInput = InputManager.Instance.HasMovementInput;
+                    bool hasInput = _unit.networkInput.magnitude >= 0.1f;
 
                     if (hasInput)
                     {
