@@ -1,7 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+
+using System.Xml.Schema;
 using UnityEngine;
 
 namespace WhatIf
@@ -13,7 +11,21 @@ namespace WhatIf
     {
         // All variables are serialized and private
         [Header("Target")]
-        [SerializeField] private Transform target;
+        private Transform target;
+
+        public Transform Target
+        {
+            get => target;
+            set
+            {
+                target = value;
+                if (target != null)
+                {
+                    transform.position = target.position + positionOffset;
+                    transform.rotation = Quaternion.LookRotation((target.position + lookAtOffset) - transform.position) * rotationOffset;
+                }
+            }
+        }
         [Space(10f)]
         
         [Header("Offsets")]
@@ -26,25 +38,13 @@ namespace WhatIf
         [SerializeField] private float moveSpeed;
         [SerializeField] private float rotationSpeed;
 
-        private void Awake()
-        {
-            if (target == null)
-            {
-                // If no target is set, set to player
-                Debug.LogWarning("No target set for camera follow, set to player");
-                target = GameObject.FindGameObjectWithTag("Player").transform;
-            }
-        }
+        
     
-        private void Start()
-        {
-            // Set initial position and rotation
-            transform.position = target.position + positionOffset;
-            transform.rotation = Quaternion.LookRotation((target.position + lookAtOffset) - transform.position) * rotationOffset;
-        }
+        
 
         private void LateUpdate()
         {
+            if (target == null) return;
             // Lerp to target position and rotation
             transform.position = Vector3.Lerp(transform.position, target.position + positionOffset, moveSpeed * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation((target.position + lookAtOffset) - transform.position) * rotationOffset, rotationSpeed * Time.deltaTime);

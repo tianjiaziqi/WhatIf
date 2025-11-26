@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace WhatIf
@@ -15,7 +16,7 @@ namespace WhatIf
     /// Base class for all units, has common behavior of all units.
     /// abstract to prevent instantiation.
     /// </summary>
-    public abstract class Unit : MonoBehaviour
+    public abstract class Unit : NetworkBehaviour
     {
         /// <summary>
         /// State config: A scriptable object defines all state types for this unit.
@@ -40,7 +41,7 @@ namespace WhatIf
         /// <summary>
         /// Current Hp of this unit. Will set to maxHp on initialization.
         /// </summary>
-        public double currentHp;
+        public NetworkVariable<double> currentHp = new NetworkVariable<double>();
         
         /// <summary>
         /// Unit type, used by AI to determine relationships.
@@ -67,15 +68,16 @@ namespace WhatIf
         /// <param name="damage">Amount of damage to take</param>
         public virtual void TakeDamage(Unit attacker, double damage)
         {
+            if (!IsServer) return;
             // Do nothing if the unit is dead or no damage
             if(damage <= 0) return;
             if(IsDead()) return;
-            currentHp -= damage;
-            currentHp = System.Math.Max(currentHp, 0); // Make sure hp never below 0
+            currentHp.Value -= damage;
+            currentHp.Value = System.Math.Max(currentHp.Value, 0); // Make sure hp never below 0
             Debug.Log($"{name} got {damage} damage from {attacker.name}, current hp: {currentHp}");
             
             // check if dead
-            if (currentHp <= 0)
+            if (currentHp.Value <= 0)
             {
                 Ondeath();
             }
@@ -97,6 +99,14 @@ namespace WhatIf
         public float runAcceleration;
 
         [Header("Jump")] public float jumpHeight;
+        
+        public override void OnNetworkSpawn()
+        {
+            if (IsServer)
+            {
+                currentHp.Value = maxHp;
+            }
+        }
 
         protected virtual void Awake()
         {
@@ -157,7 +167,6 @@ namespace WhatIf
                 return;
             }
             
-            currentHp = maxHp;
             groundDetector.OnEnter.AddListener((other) =>
             {
                 if (other.CompareTag("Ground"))

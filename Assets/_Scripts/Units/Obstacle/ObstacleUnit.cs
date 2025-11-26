@@ -18,10 +18,12 @@ namespace WhatIf
         public float attackRange = 2f;
         public float attackCooldown = 2f;
         private float _lastAttackTime = -999f;
-        
-        
-        protected override void Start()
+
+
+        public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
+            if(!IsServer) return;
             agent.Warp(transform.position);
             if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 1f, NavMesh.AllAreas))
             {
@@ -47,8 +49,6 @@ namespace WhatIf
                 Debug.LogError($"IdleState not found in FSM for {name}. ");
                 return;
             }
-            
-            currentHp = maxHp;
             fsm.ChangeState<ObstacleIdle>();
             engageArea.OnEnter.AddListener((other) =>
             {
@@ -66,8 +66,6 @@ namespace WhatIf
                     playerInRange = false;
                 }
             });
-            
-            
         }
 
         public bool CanAttack()
@@ -85,7 +83,7 @@ namespace WhatIf
 
         public override bool IsDead()
         {
-            return currentHp <= 0;
+            return currentHp.Value <= 0;
         }
 
         public override void OnAttack()
@@ -115,13 +113,14 @@ namespace WhatIf
 
         public override void TakeDamage(Unit attacker, double damage)
         {
+            if (!IsServer) return;
             if (IsDead()) return;
-            currentHp -= damage;
-            currentHp = System.Math.Max(currentHp, 0); // Make sure hp never below 0
+            currentHp.Value -= damage;
+            currentHp.Value = System.Math.Max(currentHp.Value, 0); // Make sure hp never below 0
             Debug.Log($"{name} got {damage} damage from {attacker.name}, current hp: {currentHp}");
             
             // check if dead
-            if (currentHp <= 0)
+            if (currentHp.Value <= 0)
             {
                 Ondeath();
                 return;
@@ -139,6 +138,15 @@ namespace WhatIf
             if(IsDead()) return;
             if(fsm != null)
                 fsm.ChangeState<ObstacleIdle>();
+        }
+
+        protected override void Update()
+        {
+            if (IsServer)
+            {
+                base.Update();
+            }
+            
         }
     }
 }

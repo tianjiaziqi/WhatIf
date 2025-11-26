@@ -28,8 +28,12 @@ namespace WhatIf
         public float fadeIntervalUpperBound;
         public float fadeIntervalLowerBound;
         public float nextFadeTime;
-        protected override void Start()
+
+
+        public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
+            if(!IsServer) return;
             if (fsm == null)
             {
                 Debug.LogError($"FSM is null for {name}");
@@ -43,7 +47,7 @@ namespace WhatIf
                 return;
             }
             
-            currentHp = maxHp;
+            
             fsm.ChangeState<ThinkerIdleState>();
             engageArea.OnEnter.AddListener((other) =>
             {
@@ -65,11 +69,11 @@ namespace WhatIf
 
         protected override void Update()
         {
-            base.Update();
-            if(Input.GetKeyDown(KeyCode.J))
+            if (IsServer)
             {
-                TakeDamage(this, 20);
+                base.Update();
             }
+            
         }
 
         public void InvisibleAndInvincible()
@@ -85,7 +89,7 @@ namespace WhatIf
 
         public void Respawn()
         {
-            currentHp = maxHp;
+            currentHp.Value = maxHp;
         }
 
         protected override void Ondeath()
@@ -110,13 +114,14 @@ namespace WhatIf
 
         public override void TakeDamage(Unit attacker, double damage)
         {
+            if (!IsServer) return;
             if (IsDead() || fsm.CurrentState.StateName == "ThinkerIdle") return;
-            currentHp -= damage;
-            currentHp = System.Math.Max(currentHp, 0); // Make sure hp never below 0
+            currentHp.Value -= damage;
+            currentHp.Value = System.Math.Max(currentHp.Value, 0); // Make sure hp never below 0
             Debug.Log($"{name} got {damage} damage from {attacker.name}, current hp: {currentHp}");
             
             // check if dead
-            if (currentHp <= 0)
+            if (currentHp.Value <= 0)
             {
                 Ondeath();
             }
