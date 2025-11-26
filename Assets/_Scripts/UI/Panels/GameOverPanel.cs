@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using WhatIf;
 
-public class GameOverPanel : MonoBehaviour
+public class GameOverPanel : PanelBase
 {
     [SerializeField] private Button restartButton;
+    public override string PanelName => "GameOver";
 
     private void Start()
     {
