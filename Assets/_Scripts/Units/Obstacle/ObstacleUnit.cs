@@ -20,7 +20,7 @@ namespace WhatIf
         public float attackRange = 2f;
         public float attackCooldown = 2f;
         private float _lastAttackTime = -999f;
-
+        private List<PlayerUnit> _targetsInRange = new List<PlayerUnit>();
 
         public override void OnNetworkSpawn()
         {
@@ -74,20 +74,37 @@ namespace WhatIf
             fsm.ChangeState<ObstacleIdle>();
 
             
+            _targetsInRange.Clear();
+
             engageArea.OnEnter.AddListener((other) =>
             {
                 if (other.CompareTag("Player"))
                 {
-                    targetTransform = other.transform;
-                    playerInRange = true;
+                    PlayerUnit player = other.GetComponent<PlayerUnit>();
+                    if (player != null && !player.IsDead())
+                    {
+                        if (!_targetsInRange.Contains(player))
+                        {
+                            _targetsInRange.Add(player);
+                        }
+                        UpdateTarget();
+                    }
                 }
             });
+
             engageArea.OnExit.AddListener((other) =>
             {
                 if (other.CompareTag("Player"))
                 {
-                    targetTransform = null;
-                    playerInRange = false;
+                    PlayerUnit player = other.GetComponent<PlayerUnit>();
+                    if (player != null)
+                    {
+                        if (_targetsInRange.Contains(player))
+                        {
+                            _targetsInRange.Remove(player);
+                        }
+                        UpdateTarget();
+                    }
                 }
             });
             
@@ -104,11 +121,41 @@ namespace WhatIf
             currentHp.OnValueChanged -= OnHpChanged;
         }
         
+        private void UpdateTarget()
+        {
+            _targetsInRange.RemoveAll(p => p == null);
+
+            PlayerUnit bestTarget = null;
+            float closestDistSqr = float.MaxValue;
+
+            foreach (var player in _targetsInRange)
+            {
+                if (player.IsDead()) continue;
+
+                float distSqr = (player.transform.position - transform.position).sqrMagnitude;
+                if (distSqr < closestDistSqr)
+                {
+                    closestDistSqr = distSqr;
+                    bestTarget = player;
+                }
+            }
+
+            if (bestTarget != null)
+            {
+                targetTransform = bestTarget.transform;
+                playerInRange = true;
+            }
+            else
+            {
+                targetTransform = null;
+                playerInRange = false;
+            }
+        }
+        
         private void OnHpChanged(double oldHp, double newHp)
         {
             if (newHp <= 0 && oldHp > 0)
             {
-                // 无论是 Server 还是 Client，血量归零都执行死亡逻辑（播放动画、切换状态）
                 Ondeath();
             }
         }
@@ -138,6 +185,7 @@ namespace WhatIf
 
         public override void OnAttack()
         {
+            if (!IsServer) return;
             if (IsDead()) return;
             if (attackArea == null)
             {
@@ -185,6 +233,7 @@ namespace WhatIf
 
         public void OnHitAnimationFinish()
         {
+            if (!IsServer) return;
             if(IsDead()) return;
             if(fsm != null)
                 fsm.ChangeState<ObstacleIdle>();
@@ -195,6 +244,14 @@ namespace WhatIf
             if (IsServer)
             {
                 base.Update();
+                if (targetTransform != null)
+                {
+                    var p = targetTransform.GetComponent<PlayerUnit>();
+                    if (p != null && p.IsDead())
+                    {
+                        UpdateTarget();
+                    }
+                }
             }
             
         }

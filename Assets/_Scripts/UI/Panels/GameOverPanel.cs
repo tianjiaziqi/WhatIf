@@ -1,6 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,9 +11,21 @@ public class GameOverPanel : PanelBase
 
     private void Start()
     {
-        restartButton.onClick.AddListener(() =>
-        {
-            SceneManager.LoadScene(0);
-        });
+        restartButton.onClick.AddListener(OnRestartClicked);
     }
+    
+    public void OnRestartClicked()
+    {
+        
+        if (GameCycleManager.Instance != null)
+        {
+            GameCycleManager.Instance.OnRestartClicked();
+        }
+        else
+        {
+            Debug.LogError("GameCycleManager instance not found!");
+        }
+    }
+    
+    
 }

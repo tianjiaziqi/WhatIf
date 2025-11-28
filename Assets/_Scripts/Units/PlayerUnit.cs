@@ -16,7 +16,22 @@ namespace WhatIf
 
         public override void OnNetworkSpawn()
         {
+            Debug.Log($"{name} OnNetworkSpawn Called");
             base.OnNetworkSpawn();
+            animator.SetBool("IsDead", false);
+            animator.SetFloat("Speed", 0f);
+            
+            var col = GetComponent<Collider>();
+            if (col != null) col.enabled = true;
+            
+            if (rb != null) rb.isKinematic = false;
+            
+            if (fsm != null && fsm.CurrentState != null)
+            {
+                fsm.ChangeState<IdleState>();
+            }
+            
+            
             if (IsOwner)
             {
                 string currentScene = SceneManager.GetActiveScene().name;
@@ -97,7 +112,10 @@ namespace WhatIf
         {
             base.Ondeath();
             fsm.ChangeState<DieState>();
-            UIManager.Instance.ShowPanel("GameOver");
+            if (IsServer && GameCycleManager.Instance != null)
+            {
+                GameCycleManager.Instance.ReportPlayerDeath();
+            }
         }
 
         public void OnHitAnimationComplete()
@@ -163,6 +181,21 @@ namespace WhatIf
             {
                 if (clientId == OwnerClientId)
                 {
+                    Debug.Log($"[Reset] Resetting state for Player {clientId} on Scene Load");
+                    
+                    currentHp.Value = maxHp;
+                    
+                    animator.SetBool("IsDead", false);
+                    animator.SetFloat("Speed", 0f);
+                    
+                    if (rb != null) rb.isKinematic = false;
+                    var col = GetComponent<Collider>();
+                    if (col != null) col.enabled = true;
+                    
+                    if (fsm != null)
+                    {
+                        fsm.ChangeState<IdleState>();
+                    }
                     UpdatePlayerPosServer(clientId);
                 }
 
@@ -206,8 +239,11 @@ namespace WhatIf
 
             if (rb != null)
             {
-                rb.velocity = Vector3.zero;
-                PlanarVelocity = Vector3.zero;
+                if (!rb.isKinematic)
+                {
+                    rb.velocity = Vector3.zero;
+                    PlanarVelocity = Vector3.zero;
+                }
             }
 
             ClientRpcParams rpcParams = new ClientRpcParams
@@ -238,6 +274,11 @@ namespace WhatIf
 
                 if (DataHolder.Instance.loadingPanel != null)
                     DataHolder.Instance.loadingPanel.SetActive(false);
+                
+                if (animator != null)
+                {
+                    animator.SetBool("IsDead", false);
+                }
             }
         }
 

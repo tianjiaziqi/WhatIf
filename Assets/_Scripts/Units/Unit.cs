@@ -110,6 +110,7 @@ namespace WhatIf
 
         protected virtual void Awake()
         {
+            Debug.Log($"{name} Awake Called");
             // Create an FSM for the unit
             fsm = new();
             // register all states in state config

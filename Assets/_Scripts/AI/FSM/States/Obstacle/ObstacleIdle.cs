@@ -8,6 +8,7 @@ namespace WhatIf
     {
         public override string StateName => "ObstacleIdle";
         private ObstacleUnit _unit;
+        private float _enterTime;
         
         protected override void OnEnterNoParam(StateBase oldState)
         {
@@ -18,9 +19,11 @@ namespace WhatIf
             _unit.agent.isStopped = true;
             _unit.agent.ResetPath();
             _unit.animator.SetBool("IsMoving", false);
+            _enterTime = Time.time;
         }
         public override void OnUpdate()
         {
+            if (Time.time < _enterTime + 0.5f) return;
             if (_unit.playerInRange && !_unit.targetTransform.GetComponent<PlayerUnit>().IsDead())
             {
                 ownerFsm.ChangeState<ObstacleMove>();
