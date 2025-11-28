@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode.Components;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -23,26 +25,46 @@ namespace WhatIf
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            if(!IsServer) return;
-            agent.Warp(transform.position);
-            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 1f, NavMesh.AllAreas))
+            if (rb != null)
+            {
+                rb.isKinematic = true; 
+            }
+
+            if (!IsServer)
+            {
+                if (agent != null) 
+                {
+                    agent.enabled = false; 
+                }
+                
+                currentHp.OnValueChanged += OnHpChanged;
+                if (currentHp.Value <= 0) Ondeath();
+                return;
+            }
+            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2.0f, NavMesh.AllAreas))
             {
                 guardPosition = hit.position;
             }
             else
             {
                 guardPosition = transform.position;
-                Debug.LogWarning($"Can't sample position for {name}, using current position instead");
+                Debug.LogWarning($"Can't sample position using current.");
             }
+
             
+            agent.enabled = false; 
+            transform.position = guardPosition;
+            transform.rotation = Quaternion.identity;
+            agent.enabled = true;
+            agent.Warp(guardPosition);
             
-            
+    
             if (fsm == null)
             {
                 Debug.LogError($"FSM is null for {name}");
                 return;
             }
-            
+    
             var idleState = fsm.GetState<ObstacleIdle>();
             if (idleState == null)
             {
@@ -50,6 +72,8 @@ namespace WhatIf
                 return;
             }
             fsm.ChangeState<ObstacleIdle>();
+
+            
             engageArea.OnEnter.AddListener((other) =>
             {
                 if (other.CompareTag("Player"))
@@ -66,6 +90,32 @@ namespace WhatIf
                     playerInRange = false;
                 }
             });
+            
+            currentHp.OnValueChanged += OnHpChanged;
+            if (currentHp.Value <= 0)
+            {
+                Ondeath();
+            }
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+            currentHp.OnValueChanged -= OnHpChanged;
+        }
+        
+        private void OnHpChanged(double oldHp, double newHp)
+        {
+            if (newHp <= 0 && oldHp > 0)
+            {
+                // 无论是 Server 还是 Client，血量归零都执行死亡逻辑（播放动画、切换状态）
+                Ondeath();
+            }
+        }
+
+        protected override void Start()
+        {
+            
         }
 
         public bool CanAttack()

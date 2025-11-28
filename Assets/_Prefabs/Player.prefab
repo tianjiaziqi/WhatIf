@@ -1238,7 +1238,6 @@ GameObject:
   - component: {fileID: 2697725974471421907}
   - component: {fileID: 5701143073278770366}
   - component: {fileID: 8384253540028005187}
-  - component: {fileID: 8336383852219796086}
   - component: {fileID: 8758943867763292955}
   m_Layer: 8
   m_Name: Player
@@ -1381,7 +1380,8 @@ MonoBehaviour:
   rb: {fileID: 0}
   animator: {fileID: 2379210043772485240}
   maxHp: 100
-  currentHp: 0
+  currentHp:
+    m_InternalValue: 0
   unitType: 0
   atk: 20
   groundDetector: {fileID: 2825860693190584408}
@@ -1393,7 +1393,6 @@ MonoBehaviour:
   networkInput: {x: 0, y: 0}
   networkJump: 0
   networkAttack: 0
-  playerCamera: {fileID: 0}
 --- !u!114 &5701143073278770366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1438,18 +1437,6 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &8336383852219796086
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4809527111800461896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8758943867763292955
 MonoBehaviour:
   m_ObjectHideFlags: 0
