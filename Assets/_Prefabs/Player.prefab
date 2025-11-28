@@ -1239,6 +1239,7 @@ GameObject:
   - component: {fileID: 5701143073278770366}
   - component: {fileID: 8384253540028005187}
   - component: {fileID: 8758943867763292955}
+  - component: {fileID: -6263304561505878781}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -1353,7 +1354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1191993846
+  GlobalObjectIdHash: 3534719430
   InScenePlacedSourceGlobalObjectIdHash: 1753323001
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -1465,6 +1466,28 @@ MonoBehaviour:
     TriggerNameHash: 545781641
     TransitionIndex: 0
   m_Animator: {fileID: 2379210043772485240}
+--- !u!114 &-6263304561505878781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4809527111800461896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ec0cf74d21ae41bb8ad640e7ab170e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  netColor:
+    m_InternalValue: {r: 1, g: 1, b: 1, a: 1}
+  targetRenderer:
+  - {fileID: 7778171807807786260}
+  - {fileID: 8649322386550857775}
+  - {fileID: 6043296816142994436}
+  - {fileID: 185415430494800188}
+  - {fileID: 3157306743904538349}
+  - {fileID: 8039151231426794980}
+  - {fileID: 6466955326795949829}
 --- !u!1 &4934578921895930403
 GameObject:
   m_ObjectHideFlags: 0

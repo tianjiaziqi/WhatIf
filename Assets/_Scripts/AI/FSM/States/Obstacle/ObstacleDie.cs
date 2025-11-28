@@ -15,8 +15,14 @@ namespace WhatIf
             {
                 _unit = unit;
             }
-            _unit.agent.isStopped = true;
-            _unit.rb.velocity = Vector3.zero;
+            if (_unit.agent != null && _unit.agent.isActiveAndEnabled && _unit.agent.isOnNavMesh)
+            {
+                _unit.agent.isStopped = true;
+            }
+            if (_unit.rb != null && !_unit.rb.isKinematic)
+            {
+                _unit.rb.velocity = Vector3.zero;
+            }
     
            
             if (_unit.IsServer && _unit.TryGetComponent<Unity.Netcode.Components.NetworkTransform>(out var netTransform))
@@ -35,8 +41,6 @@ namespace WhatIf
         }
         public override void OnUpdate()
         {
-            _unit.rb.velocity = Vector3.zero;
-            _unit.PlanarVelocity = Vector3.zero;
         }
 
         public override void OnExit()
