@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace WhatIf
 {
@@ -53,9 +54,18 @@ namespace WhatIf
         private void UpdateInputs()
         {
 
+            
+            
+            if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
+            {
+                if (EventSystem.current.currentSelectedGameObject.GetComponent<InputField>() != null)
+                {
+                    ResetInputs();
+                    return;
+                }
+            }
             float horizontal = 0f;
             float vertical = 0f;
-            
             if (Input.GetKey(KeyCode.W)) vertical += 1f;
             if (Input.GetKey(KeyCode.S)) vertical -= 1f;
             if (Input.GetKey(KeyCode.A)) horizontal -= 1f;
@@ -70,6 +80,15 @@ namespace WhatIf
             interactPressed = Input.GetKeyDown(KeyCode.E);
             
             attackPressed = Input.GetKeyDown(KeyCode.J);
+        }
+        
+        private void ResetInputs()
+        {
+            movementInput = Vector2.zero;
+            jumpPressed = false;
+            runHeld = false;
+            attackPressed = false;
+            interactPressed = false;
         }
     }
 }

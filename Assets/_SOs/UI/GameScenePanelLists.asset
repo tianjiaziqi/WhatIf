@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Panels:
   - {fileID: 8343670947745094060, guid: 67a86780b6a374f7d8781484596157ce, type: 3}
+  - {fileID: 5714117593187387066, guid: 2c954d650a0e1449183f2745a86f7c2d, type: 3}

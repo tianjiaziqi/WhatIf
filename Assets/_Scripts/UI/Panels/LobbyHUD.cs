@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using WhatIf;
 
@@ -60,6 +61,10 @@ public class LobbyHUD : MonoBehaviour
         else
         {
             Debug.LogWarning("Local player object not found! Are you connected?");
+        }
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
         }
     }
     

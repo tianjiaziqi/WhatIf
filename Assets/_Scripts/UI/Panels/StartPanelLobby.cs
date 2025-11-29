@@ -31,6 +31,7 @@ namespace WhatIf
 
         public override void Show()
         {
+            CheckCanStart();
             UpdateTextInfo();
             base.Show();
         }
@@ -38,7 +39,26 @@ namespace WhatIf
         private void UpdateTextInfo()
         {
             int count = RoomManager.Instance.playerCount.Value;
+            if (count < 2)
+            {
+                contentText.text = "Waiting for more players";
+                return;
+            }
             contentText.text = $"You're going to start a game with {count} Players";
+        }
+
+        private void CheckCanStart()
+        {
+            if (RoomManager.Instance.playerCount.Value < 2)
+            {
+                startButton.interactable = false;
+                startButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                startButton.interactable = true;
+                startButton.gameObject.SetActive(true);
+            }
         }
     }
 }
