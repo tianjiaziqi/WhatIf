@@ -19,6 +19,7 @@ What if.. is a 3D co-op platform puzzle game. The game world is a massive cube, 
 - [Project Configuration](#project-configuration)
 - [Assignment 2](#assignment-2)
 - [Assignment 3](#assignment-3)
+- [Assignment 4](#assignment-4)
 
 
 
@@ -375,3 +376,16 @@ FSM (decision-making) and NavMeshAgent (pathfinding) consistently work together.
   - WASD - Move
   - Space - Jump
   - J - Attack
+ 
+## Assignment 4
+
+**Completed on separate branch**
+
+The multiplayer implementation is located on the **[Networking](https://github.com/tianjiaziqi/WhatIf/tree/Networking)** branch.
+
+Please switch to that branch to view:
+* **Demo Video**
+* **Setup Instructions**.
+* **Controls**
+* **Bonus Features** (Shared Lobby, Chat, Avatar Color)
+* **Technical Stack**
